@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import loginRoute from "../routes/login-route";
 
 // An instance of this class represents the server
 export default class App {
@@ -25,10 +26,7 @@ export default class App {
 
     // Configuring routes
     public routes() {
-        this.server.get("/", (req: Request, res: Response) => {
-            console.log("Route '/' called");
-            res.json({ok: true});
-        })
+        this.server.use(loginRoute);
     }
 
     // Starting server when called
