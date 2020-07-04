@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 const loginController = (req: Request, res: Response) => {
 
     const request: RequestInterface = req.body;
+    let response: ResponseInterface = { success: false, message: "", params: {} };
 
     // In this point, backend will connect to the database
 
@@ -20,6 +21,22 @@ const loginController = (req: Request, res: Response) => {
         password: "aa1bf4646de67fd9086cf6c79007026c"
     }
 
+    // If no login was found...
+    if (sql.idLogin === 0) {
+        response = {...response, message: "There is no register based on these credentials"};
+        res.json(response);
+        return false;
+    }
+    
+    // If login was found but the password doesn't match...
+    if ((request.params as {email: string, password: string}).password !== sql.password) {
+        response = {...response, message: "Password invalid!"};
+        res.json(response);
+        return false;
+    }
+
+
+    // If everything is correct...
     const { idLogin, name, email, password } = sql;
 
     // Generating a token based on the idLogin + timestamp of now turned into md5 that expires in 5 minutes
@@ -28,13 +45,10 @@ const loginController = (req: Request, res: Response) => {
 
     // Register a log here
 
-    const response: ResponseInterface = {
-        success: true,
-        message: "",
-        params: { idLogin, token }
-    };
+    response = { success: true, message: "", params: { idLogin, token } };
 
     res.json(response);
+    
 }
 
 export default loginController;
