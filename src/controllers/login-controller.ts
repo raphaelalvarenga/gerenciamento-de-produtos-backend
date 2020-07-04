@@ -39,6 +39,14 @@ const loginController = (req: Request, res: Response) => {
         const token: string = jwt.sign({payload}, "adopetsChallenge", { expiresIn: 300 });
 
         // Register a log here
+        sql = `
+            INSERT INTO logs
+            (idLog, idLogin, action, dateTime)
+            VALUES
+            (default, ${idLogin}, 'Just made a login', DEFAULT);
+        `;
+
+        connection.query(sql);
 
         response = { success: true, message: "", params: { idLogin, token } };
 
