@@ -60,6 +60,8 @@ const registerUserController = (req: Request, res: Response) => {
             }
             res.json(response);
         })
+    } else {
+        res.json(response);
     }
 }
 
