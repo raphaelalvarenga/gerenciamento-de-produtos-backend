@@ -10,26 +10,34 @@ const registerUserController = (req: Request, res: Response) => {
 
     // Check the authentication
     response = auth(req.body, response);
-    
-    // Check if the email already exists in the database
 
-    // If it doesn't exist, create a new register
+    if (response.success) {
+        // Check if the email already exists in the database
+        let sql: UserInterface = {idLogin: 0, name: "", email: "", password: ""};
 
-    // Get the id of the new user in the database
-    // const sql: UserInterface = {
-    //     idLogin: 2,
-    //     name: "John Lennon",
-    //     email: "johnlennon@gmail.com",
-    //     password: "32a3395d1c1921da25eeaa4c89907c95"
-    // }
+        // If a register was found with the data passed...
+        if (sql.idLogin !== 0) {
+            response = {...response, success: false, message: "There is already an account registered with this e-mail"};
+        } else {
+
+            // Register that new account in the database
+
+            // Get the id of the new user in the database
+            sql = {
+                idLogin: 2,
+                name: "John Lennon",
+                email: "johnlennon@gmail.com",
+                password: "32a3395d1c1921da25eeaa4c89907c95"
+            }
+            
+            const { idLogin, name, email, password } = sql;
+            
+            response = { success: true, message: "", params: {idLogin, name, email} }
+        }
+
+    }
     
-    // const { idLogin, name, email, password } = sql;
     
-    // response = {
-    //     success: true,
-    //     message: "",
-    //     params: sql
-    // }
 
     res.json(response);
 }
