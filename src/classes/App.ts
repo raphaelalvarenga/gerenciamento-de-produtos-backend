@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import loginRoute from "../routes/login-route";
 import registerUserRoute from "../routes/register-user-route";
+import logoutRoute from "../routes/logout-route";
 
 // An instance of this class represents the server
 export default class App {
@@ -29,6 +30,7 @@ export default class App {
     public routes() {
         this.server.use(loginRoute);
         this.server.use(registerUserRoute);
+        this.server.use(logoutRoute);
     }
 
     // Starting server when called
