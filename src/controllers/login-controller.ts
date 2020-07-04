@@ -3,6 +3,7 @@ import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import UserInterface from "../interfaces/user-interface";
 import md5 from "md5";
+import jwt from "jsonwebtoken";
 
 const loginController = (req: Request, res: Response) => {
 
@@ -21,9 +22,9 @@ const loginController = (req: Request, res: Response) => {
 
     const { idLogin, name, email, password } = sql;
 
-    // Generating a token as the following: idLogin + timestamp + hashed into MD5
-    const now = new Date().getTime();
-    const token: string = md5(`${sql.idLogin.toString()}${now.toString()}`);
+    // Generating a token based on the idLogin + timestamp of now turned into md5 that expires in 5 minutes
+    const payload = md5(`${idLogin}${new Date().getTime().toString()}`);
+    const token: string = jwt.sign({payload}, "adopetsChallenge", { expiresIn: 300 });
 
     // Register a log here
 
