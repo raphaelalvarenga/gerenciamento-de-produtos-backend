@@ -5,8 +5,15 @@ import ResponseInterface from "../interfaces/response-interface";
 // Validating the token passed by the front end
 const auth = (request: RequestInterface, response: ResponseInterface): ResponseInterface => {
     
-    // If token doesn't exist or it's empty...
-    if (!request.token || request.token === "") {
+    // Creating an array of validations. It will store just "trues" and "falses" so it can be checked later
+    const conditions: boolean[] = [
+        !request.token,
+        request.token === "",
+        request.token === null
+    ];
+    
+    // If token doesn't exist or is empty or is null...
+    if (conditions.includes(true)) {
         response = { ...response, message: "No-token" };
     } else {
 
