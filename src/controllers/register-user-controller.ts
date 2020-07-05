@@ -3,9 +3,13 @@ import UserInterface from "../interfaces/user-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import auth from "../routines/auth";
 import connection from "../routines/connection";
+import logsModel from "../models/logs-model";
+import RequestInterface from "../interfaces/request-interface";
 
 const registerUserController = (req: Request, res: Response) => {
 
+    const request: RequestInterface = req.body;
+    
     // Delivers this new data to frontend
     let response: ResponseInterface = { success: false, message: "", params: {} };
     let params: {name: string, email: string, password: string} = req.body.params;
@@ -41,7 +45,7 @@ const registerUserController = (req: Request, res: Response) => {
                         } else {
 
                             // Get new user id
-                            sql = `SELECT * FROM users WHERE email = ${params.email}`
+                            sql = `SELECT * FROM users WHERE email = '${params.email}'`
 
                             connection.query(sql, (selectNewUserError, selectNewUserResults, selectNewUserFields) => {
                                 if (selectNewUserError) {
@@ -50,6 +54,8 @@ const registerUserController = (req: Request, res: Response) => {
                                     const newUser: UserInterface = (selectNewUserResults as UserInterface[])[0];
 
                                     const { idLogin, name, email, password } = newUser;
+
+                                    logsModel("addUser", {idLogin: request.idLogin, newUser: {idLogin, name, email}});
                                     
                                     response = { success: true, message: "", params: {idLogin, name, email} }
                                 }
