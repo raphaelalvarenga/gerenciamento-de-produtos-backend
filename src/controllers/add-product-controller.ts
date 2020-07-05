@@ -26,6 +26,10 @@ const productController = async (req: Request, res: Response) => {
 
         response = {success: true, message: "", params: {newProduct}};
 
+        // Register new log
+        const {idLogin} = request;
+        logsModel("addProduct", {idLogin, newProduct});
+
         res.json(response);
     } else {
         res.json(response);
