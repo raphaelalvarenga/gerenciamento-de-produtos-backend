@@ -4,11 +4,11 @@ import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import ProductModel from "../models/product-model";
-import { ProductRequestParamsList } from "../interfaces/product-interface";
+import { ProductRequestParamsAdd, ProductInterface } from "../interfaces/product-interface";
 
 const productController = async (req: Request, res: Response) => {
     const request: RequestInterface = req.body;
-    const params: ProductRequestParamsList = req.body.params;
+    const params: ProductRequestParamsAdd = req.body.params;
 
     // Delivers this new data to frontend
     let response: ResponseInterface = { success: false, message: "", params: {} };
@@ -20,21 +20,16 @@ const productController = async (req: Request, res: Response) => {
     if (response.success) {
         const productModel = new ProductModel();
 
-        const sqlResult = await productModel.getProducts(params);
+        const sqlResult = await productModel.addProduct(params);
 
-        response = {success: true, message: "", params: sqlResult};
+        const newProduct: ProductInterface = sqlResult[0];
 
-        // Registering log
-        const {idLogin} = request;
-        logsModel("listProducts", {idLogin, params});
+        response = {success: true, message: "", params: {newProduct}};
 
         res.json(response);
-
     } else {
         res.json(response);
     }
-        
-
 }
 
 export default productController;

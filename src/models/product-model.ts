@@ -1,4 +1,4 @@
-import { ProductInterface, ProductRequestParams } from "../interfaces/product-interface";
+import { ProductInterface, ProductRequestParamsList, ProductRequestParamsAdd } from "../interfaces/product-interface";
 import asyncConnection from "../routines/async-connection";
 
 export default class ProductModel {
@@ -9,7 +9,7 @@ export default class ProductModel {
         this.sql = "";
     }
 
-    async getProducts(params: ProductRequestParams) {
+    async getProducts(params: ProductRequestParamsList) {
         this.sql = `
             SELECT * FROM (
                 SELECT *
@@ -25,5 +25,32 @@ export default class ProductModel {
         this.result = await conn.execute(this.sql);
         
         return this.result[0];
+    }
+
+    async addProduct(params: ProductRequestParamsAdd) {
+
+        // Add the product
+        this.sql = `
+            INSERT INTO products
+            (idProduct, name, description, category, price)
+            VALUES
+            (DEFAULT, '${params.name}', '${params.description}', '${params.category}', '${params.price}')
+        `;
+
+        let conn = await asyncConnection();
+        await conn.execute(this.sql);
+
+        // Get its register
+        this.sql = `
+            SELECT *
+            FROM products
+            ORDER BY idProduct DESC
+            LIMIT 1
+        `;
+
+        conn = await asyncConnection();
+        this.result = await conn.execute(this.sql);
+
+        return this.result[0]
     }
 }

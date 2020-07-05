@@ -9,9 +9,16 @@ export interface ProductInterface {
     storage: number;
 }
 
-export interface ProductRequestParams {
+export interface ProductRequestParamsList {
     name: string;
     description: string;
     category: string;
     pagination: Pagination;
+}
+
+export interface ProductRequestParamsAdd {
+    name: string;
+    description: string;
+    category: string;
+    price: string;
 }
