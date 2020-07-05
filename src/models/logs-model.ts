@@ -24,6 +24,19 @@ const logsModel = (type: string, payload: any) => {
             `;
         break;
 
+        case "listProducts":
+            sql = `
+                INSERT INTO logs
+                (idLog, idLogin, action, dateTime)
+                VALUES
+                (
+                    default, ${payload.idLogin},
+                    'User ${payload.idLogin} searched products with the following params: ${JSON.stringify(payload.params)}',
+                    DEFAULT
+                );
+            `;
+        break;
+
         default: break;
     }
 
