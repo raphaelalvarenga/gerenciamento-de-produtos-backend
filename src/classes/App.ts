@@ -6,6 +6,7 @@ import registerUserRoute from "../routes/register-user-route";
 import logoutRoute from "../routes/logout-route";
 import productRoute from "../routes/product-route";
 import addProductRoute from "../routes/add-product-route";
+import editProductRoute from "../routes/edit-product-route";
 
 // An instance of this class represents the server
 export default class App {
@@ -35,6 +36,7 @@ export default class App {
         this.server.use(logoutRoute);
         this.server.use(productRoute);
         this.server.use(addProductRoute);
+        this.server.use(editProductRoute);
     }
 
     // Starting server when called

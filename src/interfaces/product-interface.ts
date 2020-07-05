@@ -22,3 +22,11 @@ export interface ProductRequestParamsAdd {
     category: string;
     price: string;
 }
+
+export interface ProductRequestParamsEdit {
+    idProduct: number;
+    name: string;
+    description: string;
+    category: string;
+    price: string;
+}

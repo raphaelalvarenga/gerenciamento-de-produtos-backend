@@ -38,18 +38,29 @@ const logsModel = (type: string, payload: any) => {
         break;
 
         case "addProduct":
-            console.log("teste");
             sql = `
                 INSERT INTO logs
                 (idLog, idLogin, action, dateTime)
                 VALUES
                 (
                     default, ${payload.idLogin},
-                    'User ${payload.idLogin} added this project: ${JSON.stringify(payload.newProduct)}',
+                    'User ${payload.idLogin} added this product: ${JSON.stringify(payload.newProduct)}',
                     DEFAULT
                 );
             `;
-            console.log(sql);
+        break;
+
+        case "editProduct":
+            sql = `
+                INSERT INTO logs
+                (idLog, idLogin, action, dateTime)
+                VALUES
+                (
+                    default, ${payload.idLogin},
+                    'User ${payload.idLogin} edit this product: ${JSON.stringify(payload.editedProduct)}',
+                    DEFAULT
+                );
+            `;
         break;
 
         default: break;

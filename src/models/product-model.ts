@@ -1,4 +1,4 @@
-import { ProductInterface, ProductRequestParamsList, ProductRequestParamsAdd } from "../interfaces/product-interface";
+import { ProductInterface, ProductRequestParamsList, ProductRequestParamsAdd, ProductRequestParamsEdit } from "../interfaces/product-interface";
 import asyncConnection from "../routines/async-connection";
 
 export default class ProductModel {
@@ -17,6 +17,7 @@ export default class ProductModel {
                 WHERE name LIKE '%${params.name}%'
                 AND description LIKE '%${params.description}%'
                 AND category LIKE '%${params.category}%'
+                AND status = 1
             ) products
             LIMIT ${params.pagination.initialNumber}, ${params.pagination.finalNumber}
         `;
@@ -52,5 +53,31 @@ export default class ProductModel {
         this.result = await conn.execute(this.sql);
 
         return this.result[0]
+    }
+
+    async editProduct(params: ProductRequestParamsEdit) {
+        this.sql = `
+            UPDATE products
+            SET name = '${params.name}',
+            description = '${params.description}',
+            category = '${params.category}',
+            price = '${params.price}'
+            WHERE idProduct = ${params.idProduct}
+        `;
+
+        let conn = await asyncConnection();
+        await conn.execute(this.sql);
+
+        // Get its register
+        this.sql = `
+            SELECT *
+            FROM products
+            WHERE idProduct = ${params.idProduct}
+        `;
+
+        conn = await asyncConnection();
+        this.result = await conn.execute(this.sql);
+
+        return this.result[0];
     }
 }
