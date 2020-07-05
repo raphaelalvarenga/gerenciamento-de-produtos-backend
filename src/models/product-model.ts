@@ -80,4 +80,15 @@ export default class ProductModel {
 
         return this.result[0];
     }
+
+    async deleteProduct(idProduct: number) {
+        this.sql = `
+            UPDATE products
+            SET status = 0
+            WHERE idProduct = ${idProduct}
+        `;
+
+        let conn = await asyncConnection();
+        await conn.execute(this.sql);
+    }
 }

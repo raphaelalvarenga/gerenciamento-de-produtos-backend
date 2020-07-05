@@ -63,6 +63,19 @@ const logsModel = (type: string, payload: any) => {
             `;
         break;
 
+        case "deleteProduct":
+            sql = `
+                INSERT INTO logs
+                (idLog, idLogin, action, dateTime)
+                VALUES
+                (
+                    default, ${payload.idLogin},
+                    'User ${payload.idLogin} deleted this product: ${JSON.stringify(payload.idDeletedProduct)}',
+                    DEFAULT
+                );
+            `;
+        break;
+
         default: break;
     }
 

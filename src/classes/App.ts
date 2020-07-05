@@ -7,6 +7,7 @@ import logoutRoute from "../routes/logout-route";
 import productRoute from "../routes/product-route";
 import addProductRoute from "../routes/add-product-route";
 import editProductRoute from "../routes/edit-product-route";
+import deleteProductRoute from "../routes/delete-product-route";
 
 // An instance of this class represents the server
 export default class App {
@@ -37,6 +38,7 @@ export default class App {
         this.server.use(productRoute);
         this.server.use(addProductRoute);
         this.server.use(editProductRoute);
+        this.server.use(deleteProductRoute);
     }
 
     // Starting server when called
