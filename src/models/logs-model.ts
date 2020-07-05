@@ -2,7 +2,6 @@ import connection from "../routines/connection";
 
 const logsModel = (type: string, payload: any) => {
     let sql: string = "";
-    console.log(type);
 
     switch (type) {
         case "log":
