@@ -3,7 +3,6 @@ import auth from "../routines/auth";
 import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
-import ProductModel from "../models/product-model";
 import { ProductRequestParamsAdd, ProductInterface } from "../interfaces/product-interface";
 import connection from "../routines/connection";
 
@@ -19,7 +18,6 @@ const productController = async (req: Request, res: Response) => {
 
     // Is it authenticated?
     if (response.success) {
-        const productModel = new ProductModel();
 
         let sql = `
             INSERT INTO products

@@ -5,7 +5,6 @@ import auth from "../routines/auth";
 import connection from "../routines/connection";
 import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
-import UserModel from "../models/user-model";
 
 const registerUserController = async (req: Request, res: Response) => {
 
@@ -22,7 +21,6 @@ const registerUserController = async (req: Request, res: Response) => {
 
     // Is it authenticated?
     if (response.success) {
-        const userModel = new UserModel();
 
         let sql = `SELECT * FROM users WHERE email = '${params.email}'`;
 

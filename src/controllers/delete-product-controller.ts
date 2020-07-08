@@ -3,7 +3,6 @@ import auth from "../routines/auth";
 import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
-import ProductModel from "../models/product-model";
 import connection from "../routines/connection";
 
 const deleteProductController = async (req: Request, res: Response) => {
