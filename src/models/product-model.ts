@@ -9,6 +9,15 @@ export default class ProductModel {
         this.sql = "";
     }
 
+    async countProducts() {
+        this.sql = "SELECT COUNT(*) as total FROM products";
+        
+        const conn = await asyncConnection();
+        this.result = await conn.execute(this.sql);
+        
+        return this.result[0];
+    }
+
     async getProducts(params: ProductRequestParamsList) {
         this.sql = `
             SELECT * FROM (

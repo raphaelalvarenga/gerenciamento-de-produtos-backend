@@ -20,9 +20,13 @@ const productController = async (req: Request, res: Response) => {
     if (response.success) {
         const productModel = new ProductModel();
 
-        const sqlResult = await productModel.getProducts(params);
+        let totalProducts = await productModel.countProducts();
+        totalProducts = totalProducts[0].total;
+        console.log(totalProducts);
 
-        response = {success: true, message: "", params: sqlResult};
+        const products = await productModel.getProducts(params);
+
+        response = {success: true, message: "", params: {totalProducts, products}};
 
         // Registering log
         const {idLogin} = request;
