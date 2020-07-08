@@ -23,10 +23,10 @@ const productController = async (req: Request, res: Response) => {
             INSERT INTO products
             (idProduct, name, description, category, price)
             VALUES
-            (DEFAULT, '${params.name}', '${params.description}', '${params.category}', '${params.price}')
+            (DEFAULT, ?, ?, ?, ?)
         `;
 
-        connection.query(sql, (erro, resultAddNewProduto, fields) => {
+        connection.execute(sql, [params.name, params.description, params.category, params.price], (erro, resultAddNewProduto, fields) => {
             if (erro) {
                 res.json(erro);
             } else {

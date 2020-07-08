@@ -13,9 +13,9 @@ const loginController = (req: Request, res: Response) => {
     let response: ResponseInterface = { success: false, message: "", params: {} };
 
     // In this point, backend will connect to the database
-    let sql: string = `SELECT * FROM users WHERE email = '${request.params.email}'`;
+    let sql: string = `SELECT * FROM users WHERE email = ?`;
 
-    connection.query(sql, (error, results, fields) => {
+    connection.execute(sql, [request.params.email], (error, results, fields) => {
         const user = (results as UserInterface[])[0];
 
         // If no login was found...

@@ -20,10 +20,10 @@ const deleteProductController = async (req: Request, res: Response) => {
         let sql = `
             UPDATE products
             SET status = 0
-            WHERE idProduct = ${request.params.idProduct}
+            WHERE idProduct = ?
         `;
         
-        connection.query(sql, (erro, resultDeleteProduct, fields) => {
+        connection.execute(sql, [request.params.idProduct], (erro, resultDeleteProduct, fields) => {
             if (erro) {
                 res.json(erro);
             } else {

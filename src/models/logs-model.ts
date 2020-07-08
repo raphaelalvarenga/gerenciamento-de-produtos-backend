@@ -9,19 +9,22 @@ const logsModel = (type: string, payload: any) => {
                 INSERT INTO logs
                 (idLog, idLogin, action, dateTime)
                 VALUES
-                (default, ${payload.idLogin}, 'Just made a login', DEFAULT);
+                (default, ?, 'Just made a login', DEFAULT);
             `;
+            connection.execute(sql, [payload.idLogin], (erro, resultAddedUser, fields) => {});
         break;
 
         case "addUser":
-            const {idLogin: newLogin, name, email} = payload.newUser;
 
+            const {idLogin: newLogin, name, email} = payload.newUser;
+            console.log(payload.idLogin, payload.idLogin, newLogin);
             sql = `
                 INSERT INTO logs
                 (idLog, idLogin, action, dateTime)
                 VALUES
-                (default, ${payload.idLogin}, 'User ${payload.idLogin} registered a new user: ${newLogin}', DEFAULT);
+                (default, ?, 'User ? registered a new user: ?', DEFAULT);
             `;
+            connection.execute(sql, [payload.idLogin, payload.idLogin, newLogin], (erro, resultAddedUser, fields) => {});
         break;
 
         case "listProducts":
@@ -30,11 +33,12 @@ const logsModel = (type: string, payload: any) => {
                 (idLog, idLogin, action, dateTime)
                 VALUES
                 (
-                    default, ${payload.idLogin},
-                    'User ${payload.idLogin} searched products with the following params: ${JSON.stringify(payload.params)}',
+                    default, ?,
+                    'User ? searched products with the following params: ?',
                     DEFAULT
                 );
             `;
+            connection.execute(sql, [payload.idLogin, payload.idLogin, JSON.stringify(payload.params)], (erro, resultAddedUser, fields) => {});
         break;
 
         case "addProduct":
@@ -43,11 +47,12 @@ const logsModel = (type: string, payload: any) => {
                 (idLog, idLogin, action, dateTime)
                 VALUES
                 (
-                    default, ${payload.idLogin},
-                    'User ${payload.idLogin} added this product: ${JSON.stringify(payload.newProduct)}',
+                    default, ?,
+                    'User ? added this product: ?',
                     DEFAULT
                 );
             `;
+            connection.execute(sql, [payload.idLogin, payload.idLogin, JSON.stringify(payload.newProduct)], (erro, resultAddedUser, fields) => {});
         break;
 
         case "editProduct":
@@ -56,11 +61,12 @@ const logsModel = (type: string, payload: any) => {
                 (idLog, idLogin, action, dateTime)
                 VALUES
                 (
-                    default, ${payload.idLogin},
-                    'User ${payload.idLogin} edit this product: ${JSON.stringify(payload.editedProduct)}',
+                    default, ?,
+                    'User ? edit this product: ?',
                     DEFAULT
                 );
             `;
+            connection.execute(sql, [payload.idLogin, payload.idLogin, JSON.stringify(payload.editedProduct.idProduct)], (erro, resultAddedUser, fields) => {});
         break;
 
         case "deleteProduct":
@@ -69,17 +75,16 @@ const logsModel = (type: string, payload: any) => {
                 (idLog, idLogin, action, dateTime)
                 VALUES
                 (
-                    default, ${payload.idLogin},
-                    'User ${payload.idLogin} deleted this product: ${JSON.stringify(payload.idDeletedProduct)}',
+                    default, ?,
+                    'User ? deleted this product: ?',
                     DEFAULT
                 );
             `;
+            connection.execute(sql, [payload.idLogin, payload.idLogin, JSON.stringify(payload.idDeletedProduct)], (erro, resultAddedUser, fields) => {});
         break;
 
         default: break;
     }
-
-    connection.query(sql);
 }
 
 export default logsModel;

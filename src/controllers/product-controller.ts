@@ -31,15 +31,21 @@ const productController = async (req: Request, res: Response) => {
                     SELECT * FROM (
                         SELECT *
                         FROM products
-                        WHERE name LIKE '%${params.name}%'
-                        AND description LIKE '%${params.description}%'
-                        AND category LIKE '%${params.category}%'
+                        WHERE name LIKE '%?%'
+                        AND description LIKE '%?%'
+                        AND category LIKE '%?%'
                         AND status = 1
                     ) products
-                    LIMIT ${params.pagination.initialNumber}, ${params.pagination.finalNumber}
+                    LIMIT ?, ?
                 `;
 
-                connection.query(sql, (erro, resultProdutcts, fields) => {
+                connection.execute(sql, [
+                    params.name,
+                    params.description,
+                    params.category,
+                    params.pagination.initialNumber,
+                    params.pagination.finalNumber
+                ], (erro, resultProdutcts, fields) => {
                     if (erro) {
                         res.json(erro);
                     } else {

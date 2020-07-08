@@ -22,9 +22,9 @@ const registerUserController = async (req: Request, res: Response) => {
     // Is it authenticated?
     if (response.success) {
 
-        let sql = `SELECT * FROM users WHERE email = '${params.email}'`;
+        let sql = `SELECT * FROM users WHERE email = ?`;
 
-        connection.query(sql, (erro, resultAddUser, fields) => {
+        connection.execute(sql, [params.email], (erro, resultAddUser, fields) => {
             if (erro) {
                 res.json(erro);
             } else {
@@ -40,16 +40,16 @@ const registerUserController = async (req: Request, res: Response) => {
                     INSERT INTO users
                     (idLogin, name, email, password)
                     VALUES
-                    (DEFAULT, '${params.name}', '${params.email}', '${params.password}')
+                    (DEFAULT, ?, ?, ?)
                 `;
 
-                connection.query(sql, (erro, resultAddUser, fields) => {
+                connection.execute(sql, [params.name, params.email, params.password], (erro, resultAddUser, fields) => {
                     if (erro) {
                         res.json(erro);
                     } else {
-                        sql = `SELECT * FROM users WHERE email = '${params.email}'`;
+                        sql = `SELECT * FROM users WHERE email = ?`;
 
-                        connection.query(sql, (erro, resultAddedUser, fields) => {
+                        connection.execute(sql, [params.email], (erro, resultAddedUser, fields) => {
                             if (erro) {
                                 res.json(erro);
                             } else {
