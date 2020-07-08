@@ -4,6 +4,7 @@ import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import ProductModel from "../models/product-model";
+import connection from "../routines/connection";
 
 const deleteProductController = async (req: Request, res: Response) => {
     const request: RequestInterface = req.body;
@@ -16,17 +17,26 @@ const deleteProductController = async (req: Request, res: Response) => {
 
     // Is it authenticated?
     if (response.success) {
-        const productModel = new ProductModel();
 
-        await productModel.deleteProduct(request.params.idProduct);
+        let sql = `
+            UPDATE products
+            SET status = 0
+            WHERE idProduct = ${request.params.idProduct}
+        `;
+        
+        connection.query(sql, (erro, resultDeleteProduct, fields) => {
+            if (erro) {
+                res.json(erro);
+            } else {
+                response = {success: true, message: "", params: {}};
 
-        response = {success: true, message: "", params: {}};
+                // Register new log
+                const {idLogin} = request;
+                logsModel("deleteProduct", {idLogin, idDeletedProduct: request.params.idProduct});
 
-        // Register new log
-        const {idLogin} = request;
-        logsModel("deleteProduct", {idLogin, idDeletedProduct: request.params.idProduct});
-
-        res.json(response);
+                res.json(response);
+            }
+        })
     } else {
         res.json(response);
     }

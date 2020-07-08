@@ -5,6 +5,7 @@ import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import ProductModel from "../models/product-model";
 import { ProductRequestParamsAdd, ProductInterface } from "../interfaces/product-interface";
+import connection from "../routines/connection";
 
 const productController = async (req: Request, res: Response) => {
     const request: RequestInterface = req.body;
@@ -20,17 +21,42 @@ const productController = async (req: Request, res: Response) => {
     if (response.success) {
         const productModel = new ProductModel();
 
-        const sqlResult = await productModel.addProduct(params);
+        let sql = `
+            INSERT INTO products
+            (idProduct, name, description, category, price)
+            VALUES
+            (DEFAULT, '${params.name}', '${params.description}', '${params.category}', '${params.price}')
+        `;
 
-        const newProduct: ProductInterface = sqlResult[0];
+        connection.query(sql, (erro, resultAddNewProduto, fields) => {
+            if (erro) {
+                res.json(erro);
+            } else {
 
-        response = {success: true, message: "", params: {newProduct}};
+                sql = `
+                    SELECT *
+                    FROM products
+                    ORDER BY idProduct DESC
+                    LIMIT 1
+                `;
 
-        // Register new log
-        const {idLogin} = request;
-        logsModel("addProduct", {idLogin, newProduct});
+                connection.query(sql, (erro, resultNewProduto, fields) => {
 
-        res.json(response);
+                    if (erro) {
+                        res.json(erro);
+                    } else {
+                        const newProduct: ProductInterface = (resultNewProduto as any)[0];
+                        response = {success: true, message: "", params: {newProduct}};
+                        
+                        // Register new log
+                        const {idLogin} = request;
+                        logsModel("addProduct", {idLogin, newProduct});
+                        
+                        res.json(response);
+                    }
+                });
+            }
+        });
     } else {
         res.json(response);
     }

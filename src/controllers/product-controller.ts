@@ -5,6 +5,7 @@ import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import ProductModel from "../models/product-model";
 import { ProductRequestParamsList } from "../interfaces/product-interface";
+import connection from "../routines/connection";
 
 const productController = async (req: Request, res: Response) => {
     const request: RequestInterface = req.body;
@@ -18,21 +19,44 @@ const productController = async (req: Request, res: Response) => {
 
     // Is it authenticated?
     if (response.success) {
-        const productModel = new ProductModel();
 
-        let totalProducts = await productModel.countProducts();
-        totalProducts = totalProducts[0].total;
-        console.log(totalProducts);
+        let sql = "SELECT COUNT(*) as total FROM products";
 
-        const products = await productModel.getProducts(params);
+        connection.query(sql, (erro, resultTotalProdutcs, fields) => {
+            if (erro) {
+                res.json(erro);
+            } else {
+                const totalProducts = (resultTotalProdutcs as any)[0].total;
 
-        response = {success: true, message: "", params: {totalProducts, products}};
+                sql = `
+                    SELECT * FROM (
+                        SELECT *
+                        FROM products
+                        WHERE name LIKE '%${params.name}%'
+                        AND description LIKE '%${params.description}%'
+                        AND category LIKE '%${params.category}%'
+                        AND status = 1
+                    ) products
+                    LIMIT ${params.pagination.initialNumber}, ${params.pagination.finalNumber}
+                `;
 
-        // Registering log
-        const {idLogin} = request;
-        logsModel("listProducts", {idLogin, params});
+                connection.query(sql, (erro, resultProdutcts, fields) => {
+                    if (erro) {
+                        res.json(erro);
+                    } else {
+                        response = {success: true, message: "", params: {totalProducts, resultProdutcts}};
+                        
+                        // Registering log
+                        const {idLogin} = request;
+                        logsModel("listProducts", {idLogin, params});
+                
+                        res.json(response);
+                    }
+                })
 
-        res.json(response);
+            }
+        });
+
 
     } else {
         res.json(response);
