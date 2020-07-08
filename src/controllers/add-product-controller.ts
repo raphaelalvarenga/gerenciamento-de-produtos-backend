@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import auth from "../routines/auth";
-import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import { ProductRequestParamsAdd, ProductInterface } from "../interfaces/product-interface";
@@ -48,7 +47,19 @@ const productController = async (req: Request, res: Response) => {
                         
                         // Register new log
                         const {idLogin} = request;
-                        logsModel("addProduct", {idLogin, newProduct});
+
+                        sql = `
+                            INSERT INTO logs
+                            (idLog, idLogin, action, dateTime)
+                            VALUES
+                            (
+                                default, ?,
+                                CONCAT('User ', ?, ' added this product: ', ?),
+                                DEFAULT
+                            );
+                        `;
+                        connection.execute(sql, [idLogin, idLogin, JSON.stringify(newProduct)], (erro, resultAddedUser, fields) => {});
+                    
                         
                         res.json(response);
                     }

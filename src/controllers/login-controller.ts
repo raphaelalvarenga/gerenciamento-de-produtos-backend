@@ -5,7 +5,6 @@ import UserInterface from "../interfaces/user-interface";
 import md5 from "md5";
 import jwt from "jsonwebtoken";
 import connection from "../routines/connection";
-import logsModel from "../models/logs-model";
 
 const loginController = (req: Request, res: Response) => {
 
@@ -40,11 +39,18 @@ const loginController = (req: Request, res: Response) => {
         const token: string = jwt.sign({payload}, "adopetsChallenge", { expiresIn: 300 });
 
         // Register a log here
-        logsModel("log", {idLogin});
+        sql = `
+            INSERT INTO logs
+            (idLog, idLogin, action, dateTime)
+            VALUES
+            (default, ?, 'Just made a login', DEFAULT);
+        `;
+        connection.execute(sql, [idLogin], (erro, resultAddedUser, fields) => {
+            response = { success: true, message: "", params: { idLogin, token } };
+            res.json(response);
+        });
 
-        response = { success: true, message: "", params: { idLogin, token } };
 
-        res.json(response);
     });
     
 }

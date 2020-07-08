@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import auth from "../routines/auth";
-import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import connection from "../routines/connection";
@@ -31,7 +30,18 @@ const deleteProductController = async (req: Request, res: Response) => {
 
                 // Register new log
                 const {idLogin} = request;
-                logsModel("deleteProduct", {idLogin, idDeletedProduct: request.params.idProduct});
+                sql = `
+                    INSERT INTO logs
+                    (idLog, idLogin, action, dateTime)
+                    VALUES
+                    (
+                        default, ?,
+                        CONCAT('User ', ?, ' deleted this product: ', ?),
+                        DEFAULT
+                    );
+                `;
+                connection.execute(sql, [idLogin, idLogin, JSON.stringify(request.params.idProduct)], (erro, resultAddedUser, fields) => {});
+            
 
                 res.json(response);
             }

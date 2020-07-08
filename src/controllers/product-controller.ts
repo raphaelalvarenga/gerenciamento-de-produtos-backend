@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import auth from "../routines/auth";
-import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import { ProductRequestParamsList } from "../interfaces/product-interface";
@@ -31,9 +30,9 @@ const productController = async (req: Request, res: Response) => {
                     SELECT * FROM (
                         SELECT *
                         FROM products
-                        WHERE name LIKE '%?%'
-                        AND description LIKE '%?%'
-                        AND category LIKE '%?%'
+                        WHERE name LIKE (SELECT CONCAT('%', ?, "%'))
+                        AND description LIKE (SELECT CONCAT('%', ?, "%'))
+                        AND category LIKE (SELECT CONCAT('%', ?, "%'))
                         AND status = 1
                     ) products
                     LIMIT ?, ?
@@ -53,9 +52,23 @@ const productController = async (req: Request, res: Response) => {
                         
                         // Registering log
                         const {idLogin} = request;
-                        logsModel("listProducts", {idLogin, params});
-                
-                        res.json(response);
+                        sql = `
+                            INSERT INTO logs
+                            (idLog, idLogin, action, dateTime)
+                            VALUES
+                            (
+                                default, ?,
+                                CONCAT('User ', ?, ' searched products with the following params: ', ?),
+                                DEFAULT
+                            );
+                        `;
+                        connection.execute(sql, [idLogin, idLogin, JSON.stringify(params)], (erro, resultAddedUser, fields) => {
+                            if (erro) {
+                                console.log(erro);
+                            } else {
+                                res.json(response);
+                            }
+                        });
                     }
                 })
 

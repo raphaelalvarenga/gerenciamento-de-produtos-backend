@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import auth from "../routines/auth";
-import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import { ProductRequestParamsEdit, ProductInterface } from "../interfaces/product-interface";
@@ -42,7 +41,19 @@ const editController = async (req: Request, res: Response) => {
                         
                         // Register new log
                         const {idLogin} = request;
-                        logsModel("editProduct", {idLogin, editedProduct});
+                        
+                        sql = `
+                            INSERT INTO logs
+                            (idLog, idLogin, action, dateTime)
+                            VALUES
+                            (
+                                default, ?,
+                                CONCAT('User ', ?, ' edited this product: ', ?),
+                                DEFAULT
+                            );
+                        `;
+                        connection.execute(sql, [idLogin, idLogin, JSON.stringify(editedProduct.idProduct)], (erro, resultAddedUser, fields) => {});
+                    
                         res.json(response);
                     }
                 });

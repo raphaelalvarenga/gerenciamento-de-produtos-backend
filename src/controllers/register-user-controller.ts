@@ -3,7 +3,6 @@ import UserInterface from "../interfaces/user-interface";
 import ResponseInterface from "../interfaces/response-interface";
 import auth from "../routines/auth";
 import connection from "../routines/connection";
-import logsModel from "../models/logs-model";
 import RequestInterface from "../interfaces/request-interface";
 
 const registerUserController = async (req: Request, res: Response) => {
@@ -48,21 +47,32 @@ const registerUserController = async (req: Request, res: Response) => {
                         res.json(erro);
                     } else {
                         sql = `SELECT * FROM users WHERE email = ?`;
+                        console.log(sql, params.email)
 
                         connection.execute(sql, [params.email], (erro, resultAddedUser, fields) => {
                             if (erro) {
                                 res.json(erro);
                             } else {
                                 const newUser: UserInterface[] = resultAddedUser as UserInterface[];
-
+                                console.log(newUser);
                                 // If user has been added...
                                 if (newUser.length > 0) {
                                     const { idLogin, name, email, password } = newUser[0];
-                                    logsModel("addUser", {idLogin: request.idLogin, newUser: {idLogin, name, email}});
-                                    response = { success: true, message: "", params: {idLogin, name, email} }
-                        
-                                    res.json(response);
-                                    return false;
+
+                                    sql = `
+                                        INSERT INTO logs
+                                        (idLog, idLogin, action, dateTime)
+                                        VALUES
+                                        (default, ?, CONCAT('User ', ?, ' registered a new user: ', ?), DEFAULT);
+                                    `;
+
+                                    connection.execute(sql, [request.idLogin, request.idLogin, idLogin], (erro, resultAddedUser, fields) => {
+                                        if (erro) {
+                                            console.log(erro);
+                                        }
+                                        response = { success: true, message: "", params: {idLogin, name, email} }
+                                        res.json(response);
+                                    });
                                 }
                             }
                         })
