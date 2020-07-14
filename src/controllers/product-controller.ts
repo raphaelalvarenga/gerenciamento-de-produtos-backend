@@ -30,9 +30,9 @@ const productController = async (req: Request, res: Response) => {
                     SELECT * FROM (
                         SELECT *
                         FROM products
-                        WHERE name LIKE (SELECT CONCAT('%', ?, "%'))
-                        AND description LIKE (SELECT CONCAT('%', ?, "%'))
-                        AND category LIKE (SELECT CONCAT('%', ?, "%'))
+                        WHERE name LIKE (SELECT CONCAT('%', ?, '%'))
+                        AND description LIKE (SELECT CONCAT('%', ?, '%'))
+                        AND category LIKE (SELECT CONCAT('%', ?, '%'))
                         AND status = 1
                     ) products
                     LIMIT ?, ?
@@ -44,11 +44,11 @@ const productController = async (req: Request, res: Response) => {
                     params.category,
                     params.pagination.initialNumber,
                     params.pagination.finalNumber
-                ], (erro, resultProdutcts, fields) => {
+                ], (erro, products, fields) => {
                     if (erro) {
                         res.json(erro);
                     } else {
-                        response = {success: true, message: "", params: {totalProducts, resultProdutcts}};
+                        response = {success: true, message: "", params: {totalProducts, products}};
                         
                         // Registering log
                         const {idLogin} = request;
