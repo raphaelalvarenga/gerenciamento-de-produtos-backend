@@ -29,4 +29,5 @@ export interface ProductRequestParamsEdit {
     description: string;
     category: string;
     price: string;
+    status: number;
 }

@@ -23,11 +23,19 @@ const editController = async (req: Request, res: Response) => {
             SET name = ?,
             description = ?,
             category = ?,
-            price = ?
+            price = ?,
+            status = ?
             WHERE idProduct = ?
         `;
         
-        connection.execute(sql, [params.name, params.description, params.category, params.price, params.idProduct], (erro, resultEditProduct, fields) => {
+        connection.execute(sql, [
+            params.name,
+            params.description,
+            params.category,
+            params.price,
+            params.status,
+            params.idProduct
+        ], (erro, resultEditProduct, fields) => {
             if (erro) {
                 res.json(erro);
             } else {
