@@ -4,6 +4,7 @@ import cors from "cors";
 import loginRoute from "../routes/login-route";
 import registerUserRoute from "../routes/register-user-route";
 import logoutRoute from "../routes/logout-route";
+import productsRoute from "../routes/products-route";
 import productRoute from "../routes/product-route";
 import addProductRoute from "../routes/add-product-route";
 import editProductRoute from "../routes/edit-product-route";
@@ -35,6 +36,7 @@ export default class App {
         this.server.use(loginRoute);
         this.server.use(registerUserRoute);
         this.server.use(logoutRoute);
+        this.server.use(productsRoute);
         this.server.use(productRoute);
         this.server.use(addProductRoute);
         this.server.use(editProductRoute);
