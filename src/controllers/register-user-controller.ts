@@ -47,14 +47,12 @@ const registerUserController = async (req: Request, res: Response) => {
                         res.json(erro);
                     } else {
                         sql = `SELECT * FROM users WHERE email = ?`;
-                        console.log(sql, params.email)
 
                         connection.execute(sql, [params.email], (erro, resultAddedUser, fields) => {
                             if (erro) {
                                 res.json(erro);
                             } else {
                                 const newUser: UserInterface[] = resultAddedUser as UserInterface[];
-                                console.log(newUser);
                                 // If user has been added...
                                 if (newUser.length > 0) {
                                     const { idLogin, name, email, password } = newUser[0];

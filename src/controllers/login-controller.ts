@@ -36,7 +36,7 @@ const loginController = (req: Request, res: Response) => {
 
         // Generating a token based on the idLogin + timestamp of now turned into md5 that expires in 5 minutes
         const payload = md5(`${idLogin}${new Date().getTime().toString()}`);
-        const token: string = jwt.sign({payload}, "adopetsChallenge", { expiresIn: 300 });
+        const token: string = jwt.sign({payload}, "adopetsChallenge", { expiresIn: 14400 });
 
         // Register a log here
         sql = `
