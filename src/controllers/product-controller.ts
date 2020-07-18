@@ -26,7 +26,7 @@ const productController = async (req: Request, res: Response) => {
             } else {
                 const product = (resultProduct as ProductInterface[])[0];
 
-                response = {success: true, message: "", params: resultProduct};
+                response = {success: true, message: "", params: product};
                 
                 // Registering log
                 const {idLogin} = request;
